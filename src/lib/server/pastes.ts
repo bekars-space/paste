@@ -17,7 +17,7 @@ export type CreateError =
   | { status: 400; code: "empty_body"; message: string }
   | { status: 400; code: "invalid_ttl"; message: string }
   | { status: 413; code: "too_large"; message: string }
-  | { status: 429; code: "rate_limited"; retryAfterSeconds: number };
+  | { status: 429; code: "rate_limited"; retryAfterSeconds: number; message: string };
 
 export type CreateResult =
   | { ok: true; id: string; sizeBytes: number; expiresAt: string }
@@ -75,6 +75,7 @@ export async function createPaste(
         status: 429,
         code: "rate_limited",
         retryAfterSeconds: budget.retryAfterSeconds,
+        message: "Upload byte budget exceeded.",
       },
     };
   }
