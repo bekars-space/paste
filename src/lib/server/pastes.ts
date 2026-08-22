@@ -1,29 +1,20 @@
 import { PASTE_INLINE_THRESHOLD_BYTES, PASTE_MAX_BYTES } from "./env";
 import { newPasteId } from "./ids";
+import { DEFAULT_TTL, resolveTtl, TTL_CHOICES, ttlDays, type TtlChoice } from "$lib/ttl";
 import { consumeRateBudget, hashIp } from "./rate-limit";
 import { PASTES_BUCKET, supabase } from "./supabase";
 
-// ── TTL ─────────────────────────────────────────────────────────────────────
-
-const TTL_DAYS = { "1d": 1, "7d": 7, "30d": 30, "90d": 90, "365d": 365 } as const;
-export type TtlChoice = keyof typeof TTL_DAYS;
-export const DEFAULT_TTL: TtlChoice = "7d";
-export const TTL_CHOICES = Object.keys(TTL_DAYS) as TtlChoice[];
-
-/** Missing/blank → default; unknown value → null. */
-export function resolveTtl(value: string | null | undefined): TtlChoice | null {
-  if (value === undefined || value === null || value === "") return DEFAULT_TTL;
-  return value in TTL_DAYS ? (value as TtlChoice) : null;
-}
+export { DEFAULT_TTL, resolveTtl, TTL_CHOICES };
+export type { TtlChoice };
 
 function expiryFrom(ttl: TtlChoice): string {
-  return new Date(Date.now() + TTL_DAYS[ttl] * 86_400_000).toISOString();
+  return new Date(Date.now() + ttlDays(ttl) * 86_400_000).toISOString();
 }
 
 // ── Create ──────────────────────────────────────────────────────────────────
 
 export type CreateError =
-  | { status: 400; code: "empty_body" }
+  | { status: 400; code: "empty_body"; message: string }
   | { status: 400; code: "invalid_ttl"; message: string }
   | { status: 413; code: "too_large"; message: string }
   | { status: 429; code: "rate_limited"; retryAfterSeconds: number };
@@ -47,7 +38,8 @@ export async function createPaste(
 ): Promise<CreateResult> {
   const sizeBytes = encoder.encode(content).length;
 
-  if (sizeBytes === 0) return { ok: false, error: { status: 400, code: "empty_body" } };
+  if (sizeBytes === 0)
+    return { ok: false, error: { status: 400, code: "empty_body", message: "Request body must not be empty." } };
 
   const ttl = resolveTtl(ttlParam);
   if (ttl === null) {
