@@ -40,7 +40,7 @@ flowchart LR
 
     subgraph vercel ["Vercel (serverless)"]
         SK["SvelteKit server<br/>routes · form actions<br/>supabase-js service client"]
-        CR["Vercel Cron<br/>hourly purge job"]
+        CR["Vercel Cron<br/>daily purge job"]
     end
 
     subgraph supabase ["Supabase"]
@@ -113,7 +113,7 @@ sequenceDiagram
 ```
 
 Expiry is enforced **at read time** (the query filters `expires_at`), so an
-expired paste returns `404` immediately even before the hourly cleanup job
+expired paste returns `404` immediately even before the daily cleanup job
 deletes it. Expired and never-existed IDs are indistinguishable by design —
 see [Security](security.md).
 
@@ -142,12 +142,12 @@ bucket stays private, so there is no direct-to-storage hotlinking.
 
 ## Expiry lifecycle
 
-| Stage                 | Behaviour                                                                 |
-| --------------------- | ------------------------------------------------------------------------- |
-| Creation              | Caller picks TTL: `1d`, `7d` _(default)_, `30d`, `90d`, `365d`            |
-| Read after expiry     | Query filters `expires_at` → `404`                                        |
-| Cleanup (hourly cron) | `POST /api/cron/purge` deletes expired rows **and** their storage objects |
-| Retention             | Nothing survives its TTL; DB rows and objects are both removed            |
+| Stage                | Behaviour                                                                 |
+| -------------------- | ------------------------------------------------------------------------- |
+| Creation             | Caller picks TTL: `1d`, `7d` _(default)_, `30d`, `90d`, `365d`            |
+| Read after expiry    | Query filters `expires_at` → `404`                                        |
+| Cleanup (daily cron) | `POST /api/cron/purge` deletes expired rows **and** their storage objects |
+| Retention            | Nothing survives its TTL; DB rows and objects are both removed            |
 
 See [Deployment § Scheduled cleanup](deployment.md#scheduled-cleanup).
 

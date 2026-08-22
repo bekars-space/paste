@@ -66,7 +66,7 @@ project region via `vercel({ regions: ["fra1"] })` to cut DB latency.
 
 ## Scheduled cleanup
 
-Hourly purge of expired rows + storage objects, implemented as
+Daily purge of expired rows + storage objects, implemented as
 `POST /api/cron/purge` guarded by `CRON_SECRET`
 ([database.md § Cleanup](database.md#cleanup)):
 
@@ -76,7 +76,7 @@ Hourly purge of expired rows + storage objects, implemented as
   "crons": [
     {
       "path": "/api/cron/purge",
-      "schedule": "17 * * * *", // hourly at :17
+      "schedule": "17 3 * * *", // daily at 03:17 UTC
     },
   ],
 }
@@ -84,7 +84,9 @@ Hourly purge of expired rows + storage objects, implemented as
 
 Vercel sends `Authorization: Bearer <CRON_SECRET>` when `CRON_SECRET` is set —
 the endpoint must reject requests without it. Expiry correctness does not
-depend on this job (reads filter on `expires_at`); it only reclaims space.
+depend on this job (reads filter on `expires_at`); it only reclaims space. The
+schedule is once per day because Vercel's Hobby plan caps cron jobs at daily
+frequency; on Pro it can be tightened (e.g. hourly).
 
 ## Domain & verification
 

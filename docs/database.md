@@ -91,7 +91,7 @@ create table public.rate_limits (
 ```
 
 Rows are reset (not deleted) when a new window starts inside the RPC below;
-stale rows are purged opportunistically by the hourly cron endpoint.
+stale rows are purged opportunistically by the daily cron endpoint.
 
 ## Rate-budget RPC
 
@@ -208,7 +208,7 @@ export const supabase = createClient<Database>(url, key, { … });
 
 ## Cleanup
 
-Expired data is removed by the hourly cron route
+Expired data is removed by the daily cron route
 (`POST /api/cron/purge`, protected by `CRON_SECRET`):
 
 1. `DELETE FROM pastes WHERE expires_at <= now() RETURNING id, storage_path`
