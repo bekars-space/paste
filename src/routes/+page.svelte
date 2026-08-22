@@ -30,27 +30,37 @@
   <title>paste</title>
 </svelte:head>
 
-<h1>new paste</h1>
+<div class="page-head">
+  <div>
+    <h1>New paste</h1>
+    <p class="lede">Anonymous text sharing with automatic expiry.</p>
+  </div>
+</div>
 
 <form method="POST" use:enhance={onSubmit}>
   <textarea
     name="content"
     bind:value={content}
-    placeholder="paste text here…"
+    placeholder="Paste text here…"
     spellcheck="false"
     aria-label="Paste content"></textarea>
 
-  <div class="row">
-    <select name="ttl" aria-label="Expiry">
-      {#each TTL_CHOICES as choice (choice)}
-        <option value={choice} selected={choice === ttl}>expires in {choice}</option>
-      {/each}
-    </select>
-    <span class="meta" style="margin-bottom: 0">
+  <div class="toolbar">
+    <div class="field">
+      <label class="micro" for="ttl">Expiry</label>
+      <select id="ttl" name="ttl" aria-label="Expiry">
+        {#each TTL_CHOICES as choice (choice)}
+          <option value={choice} selected={choice === ttl}>{choice}</option>
+        {/each}
+      </select>
+    </div>
+
+    <span class="size-indicator" class:over={tooBig}>
       {formatBytes(size)}{tooBig ? " — over limit" : ""}
     </span>
-    <button class="primary" disabled={submitting || tooBig}>
-      {submitting ? "creating…" : "create paste"}
+
+    <button class="btn btn-primary" disabled={submitting || tooBig}>
+      {submitting ? "Creating…" : "Create paste"}
     </button>
   </div>
 

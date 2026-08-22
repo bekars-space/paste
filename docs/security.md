@@ -33,12 +33,13 @@ Paste content is arbitrary user input and must never be trusted:
 
 ### Content Security Policy
 
-Baseline CSP for HTML responses (set in `src/hooks.server.ts`):
+Baseline CSP for HTML responses, configured via `csp` on the SvelteKit Vite
+plugin in `vite.config.ts` (hash mode):
 
 ```
 Content-Security-Policy:
   default-src 'self';
-  script-src 'self';
+  script-src 'self' 'sha256-…';
   style-src 'self' 'unsafe-inline';
   img-src 'self' data:;
   connect-src 'self';
@@ -47,9 +48,23 @@ Content-Security-Policy:
   base-uri 'none'
 ```
 
-Notes: `connect-src 'self'` because the browser talks **only** to our API —
-Supabase is never called client-side. `'unsafe-inline'` styles are tolerated for
-highlighting themes; if highlighting ships without inline styles, drop it.
+Notes: CSP lives in kit config — not `hooks.server.ts` — because SvelteKit
+must hash its own inline hydration bootstrap into `script-src`; a hand-rolled
+header would block it and silently kill client-side hydration. Hash mode is
+used instead of nonces: hashes are deterministic per build and safe to cache,
+whereas nonces are incompatible with prerendering and shared caches.
+`script-src` otherwise admits no hashes beyond Kit's own — every first-party
+script is a same-origin file. The pre-paint theme bootstrap therefore lives
+in `static/theme-init.js`, loaded via `<script src>` from `src/app.html`,
+never inline. `connect-src 'self'` because the browser talks **only** to our
+API — Supabase is never called client-side. `'unsafe-inline'` styles are
+tolerated for highlighting themes; if highlighting ships without inline
+styles, drop it.
+
+`hooks.server.ts` applies the same policy (without Kit's per-build hashes) to
+responses the page renderer does not cover — raw endpoints and API routes —
+and strips the header entirely in dev, where Vite injects inline HMR/bootstrap
+scripts that cannot be stably allowlisted.
 Companion headers on every response:
 
 ```

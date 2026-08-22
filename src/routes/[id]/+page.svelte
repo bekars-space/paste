@@ -17,13 +17,32 @@
   <title>paste · {data.id}</title>
 </svelte:head>
 
-<div class="meta">
-  <span>{data.id}</span>
-  <span>{formatBytes(data.sizeBytes)}</span>
-  <span>created {formatUtc(data.createdAt)}</span>
-  <span>expires {formatUtc(data.expiresAt)}</span>
-  <a href={`/raw/${data.id}`}>raw</a>
-  <button class="linkish" onclick={copy}>{copied ? "copied ✓" : "copy"}</button>
+<div class="page-head">
+  <div>
+    <span class="micro">paste</span>
+    <h1 class="paste-id">{data.id}</h1>
+  </div>
+  <div class="actions">
+    <a class="btn btn-ghost" href={`/raw/${data.id}`}>Raw</a>
+    <button class="btn btn-primary" onclick={copy}>
+      {copied ? "Copied ✓" : "Copy"}
+    </button>
+  </div>
 </div>
+
+<dl class="meta-strip">
+  <div>
+    <dt>Size</dt>
+    <dd>{formatBytes(data.sizeBytes)}</dd>
+  </div>
+  <div>
+    <dt>Created</dt>
+    <dd>{formatUtc(data.createdAt)}</dd>
+  </div>
+  <div>
+    <dt>Expires</dt>
+    <dd>{formatUtc(data.expiresAt)}</dd>
+  </div>
+</dl>
 
 <pre class="paste"><code>{data.content}</code></pre>
