@@ -10,9 +10,18 @@ const ID_PATH = /^\/([A-Za-z0-9]{8})$/;
  * explicitly includes text/html — fall through to the viewer page; every
  * other client (curl, wget, plain HTTP) gets the raw body right here, no
  * redirect involved. GET /raw/{id} never matches and stays forced-raw.
+ *
+ * Kit strips the /__data.json and /__route.js suffixes from event.url before
+ * hooks run, so its internal navigation requests look like plain /{id} here.
+ * Their Accept carries no text/html — they must be excluded or the router
+ * receives raw paste bytes instead of its payloads (symptom: 500 right after
+ * create).
  */
 const negotiate: Handle = async ({ event, resolve }) => {
   if (event.request.method !== "GET") return resolve(event);
+
+  if (event.isDataRequest) return resolve(event);
+  if (new URL(event.request.url).pathname.endsWith("/__route.js")) return resolve(event);
 
   const id = ID_PATH.exec(event.url.pathname)?.[1];
   if (!id || /text\/html/i.test(event.request.headers.get("accept") ?? "")) {
