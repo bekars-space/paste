@@ -7,11 +7,11 @@
 </svelte:head>
 
 <div class="error-page">
-  <h1>{page.status}</h1>
+  <span class="error-code">{page.status}</span>
   <p>
     {page.status === 404
       ? "This paste does not exist — or it has expired."
       : (page.error?.message ?? "Something went wrong.")}
   </p>
-  <a href="/">new paste</a>
+  <a class="btn btn-ghost" href="/">New paste</a>
 </div>
