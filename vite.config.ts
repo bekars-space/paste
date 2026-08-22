@@ -1,4 +1,4 @@
-import adapter from "@sveltejs/adapter-node";
+import adapter from "@sveltejs/adapter-vercel";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig } from "vite";
 
@@ -11,7 +11,7 @@ export default defineConfig({
           filename.split(/[/\\]/).includes("node_modules") ? undefined : true,
       },
 
-      // adapter-node builds a standalone server runnable with `bun ./build/index.js`.
+      // adapter-vercel targets Vercel's Node.js runtime (docs/deployment.md).
       // See https://svelte.dev/docs/kit/adapters for more information about adapters.
       adapter: adapter(),
     }),
