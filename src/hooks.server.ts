@@ -1,4 +1,5 @@
 import { sequence } from "@sveltejs/kit/hooks";
+import { dev } from "$app/environment";
 import type { Handle } from "@sveltejs/kit";
 import { fetchRaw } from "$lib/server/raw";
 
@@ -21,22 +22,31 @@ const negotiate: Handle = async ({ event, resolve }) => {
   return fetchRaw(id, event.request.headers);
 };
 
-/** Baseline CSP + companion headers on every response (docs/security.md). */
+/**
+ * Baseline CSP for responses SvelteKit's page renderer does not cover
+ * (raw endpoints, API routes). HTML pages get a richer header from
+ * kit.csp in vite.config.ts, which hashes Kit's inline hydration
+ * bootstrap — never duplicate it here. Skipped entirely in dev, where
+ * Vite injects inline scripts that cannot be stably allowlisted.
+ */
+const BASELINE_CSP = [
+  "default-src 'self'",
+  "script-src 'self'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data:",
+  "connect-src 'self'",
+  "frame-ancestors 'none'",
+  "form-action 'self'",
+  "base-uri 'none'",
+].join("; ");
+
 const securityHeaders: Handle = async ({ event, resolve }) => {
   const response = await resolve(event);
-  response.headers.set(
-    "content-security-policy",
-    [
-      "default-src 'self'",
-      "script-src 'self'",
-      "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data:",
-      "connect-src 'self'",
-      "frame-ancestors 'none'",
-      "form-action 'self'",
-      "base-uri 'none'",
-    ].join("; "),
-  );
+  if (dev) {
+    response.headers.delete("content-security-policy");
+  } else if (!response.headers.has("content-security-policy")) {
+    response.headers.set("content-security-policy", BASELINE_CSP);
+  }
   response.headers.set("referrer-policy", "strict-origin-when-cross-origin");
   response.headers.set("x-content-type-options", "nosniff");
   response.headers.set("permissions-policy", "camera=(), microphone=(), geolocation=()");
