@@ -16,14 +16,14 @@ browser session and a one-line `curl` command.
 
 ## Stack
 
-| Layer | Choice | Notes |
-| --- | --- | --- |
-| Framework | SvelteKit 2 / Svelte 5 (runes mode) | SSR-first; minimal client JS |
-| Runtime (dev/build) | Bun >= 1.4 | Enforced via `engines` + `preinstall` guard |
-| Hosting | Vercel | Via `@sveltejs/adapter-vercel` ([ADR 0006](adr/0006-vercel-deployment.md)) |
-| Database | Supabase Postgres | Accessed over HTTPS with `@supabase/supabase-js` |
-| Object storage | Supabase Storage | Private bucket for large pastes |
-| DB access pattern | Typed supabase-js client, service role, server-only | No ORM — see [Database](database.md) |
+| Layer               | Choice                                              | Notes                                                                      |
+| ------------------- | --------------------------------------------------- | -------------------------------------------------------------------------- |
+| Framework           | SvelteKit 2 / Svelte 5 (runes mode)                 | SSR-first; minimal client JS                                               |
+| Runtime (dev/build) | Bun >= 1.4                                          | Enforced via `engines` + `preinstall` guard                                |
+| Hosting             | Vercel                                              | Via `@sveltejs/adapter-vercel` ([ADR 0006](adr/0006-vercel-deployment.md)) |
+| Database            | Supabase Postgres                                   | Accessed over HTTPS with `@supabase/supabase-js`                           |
+| Object storage      | Supabase Storage                                    | Private bucket for large pastes                                            |
+| DB access pattern   | Typed supabase-js client, service role, server-only | No ORM — see [Database](database.md)                                       |
 
 > **Pending change:** the project currently builds with
 > `@sveltejs/adapter-node`. The swap to `adapter-vercel` happens as part of the
@@ -121,11 +121,11 @@ see [Security](security.md).
 
 Pastes are split between Postgres and Storage by size:
 
-| Paste size | Stored | Why |
-| --- | --- | --- |
-| ≤ 64 KiB | Inline in `pastes.content` (TEXT) | Single read path, no extra network hop, TOAST handles compression |
-| > 64 KiB – 5 MiB | Object in private bucket `pastes`, path `{id}` | Avoids bloating table/index pages and backups with large blobs |
-| > 5 MiB | Rejected with `413` | Hard cap keeps requests within serverless limits and contains abuse |
+| Paste size       | Stored                                         | Why                                                                 |
+| ---------------- | ---------------------------------------------- | ------------------------------------------------------------------- |
+| ≤ 64 KiB         | Inline in `pastes.content` (TEXT)              | Single read path, no extra network hop, TOAST handles compression   |
+| > 64 KiB – 5 MiB | Object in private bucket `pastes`, path `{id}` | Avoids bloating table/index pages and backups with large blobs      |
+| > 5 MiB          | Rejected with `413`                            | Hard cap keeps requests within serverless limits and contains abuse |
 
 Rationale and alternatives: [ADR 0005](adr/0005-hybrid-storage-threshold.md).
 A CHECK constraint guarantees each row has exactly one payload source.
@@ -137,17 +137,17 @@ bucket stays private, so there is no direct-to-storage hotlinking.
 - 8 characters, base62 (`A-Za-z0-9`), generated with a CSPRNG (`nanoid`).
 - ≈ 48 bits of entropy — enough to make enumeration impractical for this scale;
   collisions retried up to 5 times before failing the request.
-- The ID *is* the secret: anyone holding the URL can read the paste. Treat
+- The ID _is_ the secret: anyone holding the URL can read the paste. Treat
   paste URLs like bearer tokens (see [Security](security.md)).
 
 ## Expiry lifecycle
 
-| Stage | Behaviour |
-| --- | --- |
-| Creation | Caller picks TTL: `1d`, `7d` *(default)*, `30d`, `90d`, `365d` |
-| Read after expiry | Query filters `expires_at` → `404` |
+| Stage                 | Behaviour                                                                 |
+| --------------------- | ------------------------------------------------------------------------- |
+| Creation              | Caller picks TTL: `1d`, `7d` _(default)_, `30d`, `90d`, `365d`            |
+| Read after expiry     | Query filters `expires_at` → `404`                                        |
 | Cleanup (hourly cron) | `POST /api/cron/purge` deletes expired rows **and** their storage objects |
-| Retention | Nothing survives its TTL; DB rows and objects are both removed |
+| Retention             | Nothing survives its TTL; DB rows and objects are both removed            |
 
 See [Deployment § Scheduled cleanup](deployment.md#scheduled-cleanup).
 
@@ -156,13 +156,13 @@ See [Deployment § Scheduled cleanup](deployment.md#scheduled-cleanup).
 All tunables live in one place and are overridable per environment
 ([Development § Environment variables](development.md#environment-variables)):
 
-| Constant | Default | Purpose |
-| --- | --- | --- |
-| `PASTE_INLINE_THRESHOLD_BYTES` | `65536` (64 KiB) | Inline-vs-storage cutoff |
-| `PASTE_MAX_BYTES` | `5242880` (5 MiB) | Absolute size cap |
-| `RATE_LIMIT_BUDGET_BYTES` | `20971520` (20 MiB/h/IP) | Upload byte budget |
-| `RATE_LIMIT_WINDOW_SECONDS` | `3600` | Rate window length |
-| TTL options | `1d/7d/30d/90d/365d` | Selectable at creation |
+| Constant                       | Default                  | Purpose                  |
+| ------------------------------ | ------------------------ | ------------------------ |
+| `PASTE_INLINE_THRESHOLD_BYTES` | `65536` (64 KiB)         | Inline-vs-storage cutoff |
+| `PASTE_MAX_BYTES`              | `5242880` (5 MiB)        | Absolute size cap        |
+| `RATE_LIMIT_BUDGET_BYTES`      | `20971520` (20 MiB/h/IP) | Upload byte budget       |
+| `RATE_LIMIT_WINDOW_SECONDS`    | `3600`                   | Rate window length       |
+| TTL options                    | `1d/7d/30d/90d/365d`     | Selectable at creation   |
 
 ## Intended code layout
 

@@ -1,9 +1,7 @@
 import { RATE_LIMIT_BUDGET_BYTES, RATE_LIMIT_SECRET, RATE_LIMIT_WINDOW_SECONDS } from "./env";
 import { supabase } from "./supabase";
 
-export type RateLimitResult =
-  | { allowed: true }
-  | { allowed: false; retryAfterSeconds: number };
+export type RateLimitResult = { allowed: true } | { allowed: false; retryAfterSeconds: number };
 
 const encoder = new TextEncoder();
 

@@ -19,16 +19,16 @@ curl -sL https://paste.example.com/kX9mQ2pL   # prints raw text in a terminal
 
 Full documentation lives in [`docs/`](docs/README.md):
 
-| Doc | Contents |
-| --- | --- |
-| [Architecture](docs/architecture.md) | Stack, components, request flows |
-| [API](docs/api.md) | Routes, content negotiation, status codes |
-| [Database](docs/database.md) | Supabase schema, RLS, migrations, types |
-| [Rate limiting](docs/rate-limiting.md) | Byte-budget policy per IP |
-| [Security](docs/security.md) | Threat model, headers, privacy |
-| [Deployment](docs/deployment.md) | Vercel + Supabase setup, cron |
-| [Development](docs/development.md) | Local setup, commands, conventions |
-| [ADRs](docs/adr/0001-record-architecture-decisions.md) | Architecture decision records |
+| Doc                                                    | Contents                                  |
+| ------------------------------------------------------ | ----------------------------------------- |
+| [Architecture](docs/architecture.md)                   | Stack, components, request flows          |
+| [API](docs/api.md)                                     | Routes, content negotiation, status codes |
+| [Database](docs/database.md)                           | Supabase schema, RLS, migrations, types   |
+| [Rate limiting](docs/rate-limiting.md)                 | Byte-budget policy per IP                 |
+| [Security](docs/security.md)                           | Threat model, headers, privacy            |
+| [Deployment](docs/deployment.md)                       | Vercel + Supabase setup, cron             |
+| [Development](docs/development.md)                     | Local setup, commands, conventions        |
+| [ADRs](docs/adr/0001-record-architecture-decisions.md) | Architecture decision records             |
 
 ## Quickstart
 

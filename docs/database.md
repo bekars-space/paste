@@ -12,16 +12,11 @@ All database access goes through [`@supabase/supabase-js`](https://supabase.com/
 ```ts
 // src/lib/server/supabase.ts
 import { createClient } from "@supabase/supabase-js";
-import {
-  SUPABASE_URL,
-  SUPABASE_SERVICE_ROLE_KEY,
-} from "$env/static/private";
+import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from "$env/static/private";
 
-export const supabase = createClient(
-  SUPABASE_URL,
-  SUPABASE_SERVICE_ROLE_KEY,
-  { auth: { persistSession: false } },
-);
+export const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+  auth: { persistSession: false },
+});
 ```
 
 Why this shape ([ADR 0002](adr/0002-supabase-for-db-and-storage.md)):
@@ -29,7 +24,7 @@ Why this shape ([ADR 0002](adr/0002-supabase-for-db-and-storage.md)):
 - **Serverless-friendly** — plain HTTPS calls; no TCP connection pooling to
   manage on Vercel (a direct `postgres` driver would need Supavisor
   transaction-mode pooling).
-- **One client for DB *and* Storage** — large-paste upload/download uses the
+- **One client for DB _and_ Storage** — large-paste upload/download uses the
   same instance.
 - **Type safety without ORM overhead** — query types are generated from the
   live schema (below).
@@ -45,15 +40,15 @@ Two tables, no user/auth tables by design ([ADR 0003](adr/0003-anonymous-no-auth
 
 ### `public.pastes`
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | `text` PK | 8-char base62 |
-| `content` | `text` nullable | Inline payload (≤ 64 KiB) |
-| `storage_path` | `text` nullable | Object key in bucket `pastes` (`{id}`) |
-| `size_bytes` | `bigint NOT NULL` | Original byte length |
-| `created_at` | `timestamptz NOT NULL DEFAULT now()` | |
-| `expires_at` | `timestamptz NOT NULL` | Read-time expiry filter + cleanup key |
-| `ip_hash` | `text NOT NULL` | HMAC-SHA256 of client IP — never the raw IP |
+| Column         | Type                                 | Notes                                       |
+| -------------- | ------------------------------------ | ------------------------------------------- |
+| `id`           | `text` PK                            | 8-char base62                               |
+| `content`      | `text` nullable                      | Inline payload (≤ 64 KiB)                   |
+| `storage_path` | `text` nullable                      | Object key in bucket `pastes` (`{id}`)      |
+| `size_bytes`   | `bigint NOT NULL`                    | Original byte length                        |
+| `created_at`   | `timestamptz NOT NULL DEFAULT now()` |                                             |
+| `expires_at`   | `timestamptz NOT NULL`               | Read-time expiry filter + cleanup key       |
+| `ip_hash`      | `text NOT NULL`                      | HMAC-SHA256 of client IP — never the raw IP |
 
 Exactly one payload column must be non-null:
 
@@ -81,11 +76,11 @@ create index pastes_expires_at_idx on public.pastes (expires_at);
 
 Fixed-window byte counters keyed by hashed IP:
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| `ip_hash` | `text` PK | HMAC-SHA256 of client IP |
-| `window_start` | `timestamptz NOT NULL` | Start of current fixed window |
-| `bytes_used` | `bigint NOT NULL DEFAULT 0` | Upload bytes consumed |
+| Column         | Type                        | Notes                         |
+| -------------- | --------------------------- | ----------------------------- |
+| `ip_hash`      | `text` PK                   | HMAC-SHA256 of client IP      |
+| `window_start` | `timestamptz NOT NULL`      | Start of current fixed window |
+| `bytes_used`   | `bigint NOT NULL DEFAULT 0` | Upload bytes consumed         |
 
 ```sql
 create table public.rate_limits (

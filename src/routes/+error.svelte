@@ -11,7 +11,7 @@
   <p>
     {page.status === 404
       ? "This paste does not exist — or it has expired."
-      : page.error?.message ?? "Something went wrong."}
+      : (page.error?.message ?? "Something went wrong.")}
   </p>
   <a href="/">new paste</a>
 </div>

@@ -3,17 +3,17 @@
 ## Threat model
 
 `paste` is a public, anonymous, unmoderated content host. The design accepts
-that abuse *will* happen and aims to make it boring, bounded, and cheap:
+that abuse _will_ happen and aims to make it boring, bounded, and cheap:
 
-| Threat | Control |
-| --- | --- |
-| Storage/DB flooding | Byte-budget rate limiting ([rate-limiting.md](rate-limiting.md)) + 5 MiB cap + TTL expiry |
-| Hosting malware/phishing | Short TTLs (default 7d), no custom URLs, IDs double as capability secrets; takedown = delete by ID |
-| Enumeration of pastes | ~48-bit random base62 IDs; expired ≡ never-existed (`404` both ways) |
-| XSS via paste content | Auto-escaping + strict CSP + forced `text/plain` on raw paths (below) |
-| Content-type confusion / sniffing | `X-Content-Type-Options: nosniff`, explicit charset everywhere |
-| IP harvesting / privacy | Raw IPs never stored — only HMAC hashes |
-| Key leakage | Service-role key server-only via `$lib/server` import boundary |
+| Threat                            | Control                                                                                            |
+| --------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Storage/DB flooding               | Byte-budget rate limiting ([rate-limiting.md](rate-limiting.md)) + 5 MiB cap + TTL expiry          |
+| Hosting malware/phishing          | Short TTLs (default 7d), no custom URLs, IDs double as capability secrets; takedown = delete by ID |
+| Enumeration of pastes             | ~48-bit random base62 IDs; expired ≡ never-existed (`404` both ways)                               |
+| XSS via paste content             | Auto-escaping + strict CSP + forced `text/plain` on raw paths (below)                              |
+| Content-type confusion / sniffing | `X-Content-Type-Options: nosniff`, explicit charset everywhere                                     |
+| IP harvesting / privacy           | Raw IPs never stored — only HMAC hashes                                                            |
+| Key leakage                       | Service-role key server-only via `$lib/server` import boundary                                     |
 
 Out of scope for v1 (documented future work): report-abuse endpoint,
 optional private/unlisted pastes with separate read keys.
@@ -68,12 +68,12 @@ HTML file can never run in the origin.
 
 ## Secrets handling
 
-| Secret | Scope | Rule |
-| --- | --- | --- |
-| `SUPABASE_SERVICE_ROLE_KEY` | Server | Bypasses RLS — the most powerful credential in the system. Only imported inside `$lib/server/**`. |
-| `SUPABASE_URL` | Server | Not sensitive alone, but kept server-side since no client-side Supabase calls exist. |
-| `RATE_LIMIT_SECRET` | Server | HMAC key for IP hashing. ≥ 32 random bytes (`openssl rand -hex 32`). Rotating it resets all rate windows and orphans old hashes — acceptable. |
-| `CRON_SECRET` | Server | Shared secret for `/api/cron/purge`; compared with constant-time equality. |
+| Secret                      | Scope  | Rule                                                                                                                                          |
+| --------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server | Bypasses RLS — the most powerful credential in the system. Only imported inside `$lib/server/**`.                                             |
+| `SUPABASE_URL`              | Server | Not sensitive alone, but kept server-side since no client-side Supabase calls exist.                                                          |
+| `RATE_LIMIT_SECRET`         | Server | HMAC key for IP hashing. ≥ 32 random bytes (`openssl rand -hex 32`). Rotating it resets all rate windows and orphans old hashes — acceptable. |
+| `CRON_SECRET`               | Server | Shared secret for `/api/cron/purge`; compared with constant-time equality.                                                                    |
 
 Enforcement mechanisms:
 

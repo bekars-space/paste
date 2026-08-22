@@ -38,5 +38,6 @@ export const RATE_LIMIT_WINDOW_SECONDS = int("RATE_LIMIT_WINDOW_SECONDS", 3600);
 
 /** Optional canonical URL override; falls back to the request origin. */
 export function siteUrl(fallbackOrigin: string): string {
-  return env.PUBLIC_SITE_URL?.replace(/\/$/, "") || fallbackOrigin;
+  const configured = env.PUBLIC_SITE_URL as string | undefined;
+  return configured?.replace(/\/$/, "") || fallbackOrigin;
 }

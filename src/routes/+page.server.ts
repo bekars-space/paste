@@ -14,7 +14,11 @@ export const actions: Actions = {
     const content = String(form.get("content") ?? "");
     const ttlField = form.get("ttl");
 
-    const result = await createPaste(content, typeof ttlField === "string" ? ttlField : null, clientIp(request.headers));
+    const result = await createPaste(
+      content,
+      typeof ttlField === "string" ? ttlField : null,
+      clientIp(request.headers),
+    );
 
     if (!result.ok) {
       const e = result.error;

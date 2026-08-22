@@ -39,7 +39,10 @@ export async function createPaste(
   const sizeBytes = encoder.encode(content).length;
 
   if (sizeBytes === 0)
-    return { ok: false, error: { status: 400, code: "empty_body", message: "Request body must not be empty." } };
+    return {
+      ok: false,
+      error: { status: 400, code: "empty_body", message: "Request body must not be empty." },
+    };
 
   const ttl = resolveTtl(ttlParam);
   if (ttl === null) {

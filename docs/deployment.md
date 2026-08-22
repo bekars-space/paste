@@ -33,7 +33,7 @@ adapter: vercel(),
 ```
 
 Keep Bun as the local dev/build runner (`bun --bun vite build`) — the adapter
-only changes what the *build output* targets (Vercel serverless functions), not
+only changes what the _build output_ targets (Vercel serverless functions), not
 how you run Vite locally. Optionally pin function regions near the Supabase
 project region via `vercel({ regions: ["fra1"] })` to cut DB latency.
 
@@ -53,14 +53,14 @@ project region via `vercel({ regions: ["fra1"] })` to cut DB latency.
    build command default (`vite build` via package script is fine).
 3. Add environment variables (Production + Preview):
 
-| Variable | Value |
-| --- | --- |
-| `SUPABASE_URL` | Project URL |
-| `SUPABASE_SERVICE_ROLE_KEY` | service_role secret (mark *Sensitive*) |
-| `RATE_LIMIT_SECRET` | `openssl rand -hex 32` |
-| `CRON_SECRET` | `openssl rand -hex 32` |
-| `PUBLIC_SITE_URL` | e.g. `https://paste.example.com` |
-| Tunables | Optional — defaults documented in [Architecture](architecture.md#configuration-constants) |
+| Variable                    | Value                                                                                     |
+| --------------------------- | ----------------------------------------------------------------------------------------- |
+| `SUPABASE_URL`              | Project URL                                                                               |
+| `SUPABASE_SERVICE_ROLE_KEY` | service_role secret (mark _Sensitive_)                                                    |
+| `RATE_LIMIT_SECRET`         | `openssl rand -hex 32`                                                                    |
+| `CRON_SECRET`               | `openssl rand -hex 32`                                                                    |
+| `PUBLIC_SITE_URL`           | e.g. `https://paste.example.com`                                                          |
+| Tunables                    | Optional — defaults documented in [Architecture](architecture.md#configuration-constants) |
 
 4. Deploy. First deploy can also run before DNS/domain work.
 
@@ -76,9 +76,9 @@ Hourly purge of expired rows + storage objects, implemented as
   "crons": [
     {
       "path": "/api/cron/purge",
-      "schedule": "17 * * * *" // hourly at :17
-    }
-  ]
+      "schedule": "17 * * * *", // hourly at :17
+    },
+  ],
 }
 ```
 
@@ -114,7 +114,7 @@ curl -sI https://paste.example.com/raw/<id>
 
 - **Rollbacks:** Vercel instant rollback promotes any previous deployment.
 - **Schema changes:** always land as migrations (`supabase/migrations/`),
-  pushed *before* deploying app code that depends on them.
+  pushed _before_ deploying app code that depends on them.
 - **Secrets rotation:** procedure in [Security § Secrets handling](security.md#secrets-handling).
 - **Cost watch:** Supabase usage is dominated by Storage bandwidth for large
   pastes — if it grows, revisit the inline threshold and TTL defaults first.

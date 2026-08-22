@@ -4,10 +4,11 @@ import { CRON_SECRET } from "$lib/server/env";
 import { purgeExpired } from "$lib/server/pastes";
 
 /**
- * Hourly cleanup invoked by Vercel Cron (vercel.json), which authenticates
- * with `Authorization: Bearer $CRON_SECRET`.
+ * Hourly cleanup invoked by Vercel Cron (vercel.json). Vercel fires this as
+ * a GET request authenticated via `Authorization: Bearer $CRON_SECRET`; POST
+ * is kept for manual triggering.
  */
-export const POST: RequestHandler = async ({ request }) => {
+const purge: RequestHandler = async ({ request }) => {
   const auth = request.headers.get("authorization");
   if (auth !== `Bearer ${CRON_SECRET}`) {
     return json(
@@ -19,3 +20,6 @@ export const POST: RequestHandler = async ({ request }) => {
   const purged = await purgeExpired();
   return json({ purged });
 };
+
+export const GET = purge;
+export const POST = purge;

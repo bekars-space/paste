@@ -17,6 +17,9 @@
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check"
   },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.3"
+  },
   "devDependencies": {
     "@sveltejs/adapter-vercel": "^6.3.4",
     "@sveltejs/kit": "^2.63.0",
@@ -30,8 +33,5 @@
   },
   "engines": {
     "bun": ">=1.4.0"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.112.3"
   }
 }

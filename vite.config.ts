@@ -13,7 +13,9 @@ export default defineConfig({
 
       // adapter-vercel targets Vercel's Node.js runtime (docs/deployment.md).
       // See https://svelte.dev/docs/kit/adapters for more information about adapters.
-      adapter: adapter(),
+      // Pin the serverless runtime explicitly — building under Bun makes
+      // version auto-detection unreliable (docs/deployment.md).
+      adapter: adapter({ runtime: "nodejs22.x" }),
     }),
   ],
 });

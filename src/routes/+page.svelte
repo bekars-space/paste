@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { PageProps } from "./$types";
   import { enhance } from "$app/forms";
   import { DEFAULT_TTL, TTL_CHOICES } from "$lib/ttl";
   import { formatBytes } from "$lib/format";
@@ -31,17 +32,13 @@
 
 <h1>new paste</h1>
 
-<form
-  method="POST"
-  use:enhance={onSubmit}
->
+<form method="POST" use:enhance={onSubmit}>
   <textarea
     name="content"
     bind:value={content}
     placeholder="paste text here…"
     spellcheck="false"
-    aria-label="Paste content"
-  ></textarea>
+    aria-label="Paste content"></textarea>
 
   <div class="row">
     <select name="ttl" aria-label="Expiry">
