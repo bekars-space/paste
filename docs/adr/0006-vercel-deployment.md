@@ -19,7 +19,7 @@ no appetite for server ops; hobby budget.
 Deploy to **Vercel using `@sveltejs/adapter-vercel`**. The swap from the
 current `adapter-node` happens as the first deployment step
 ([deployment.md](../deployment.md#step-0-adapter-switch)); Bun remains the local
-dev/build runner — only the build *output target* changes.
+dev/build runner — only the build _output target_ changes.
 
 Rationale:
 

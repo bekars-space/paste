@@ -37,10 +37,10 @@ Rationale:
 
 Rejected alternatives:
 
-- *Negotiation only*: unpredictable across exotic clients; no way to force raw.
-- *`/raw` only*: breaks the "paste URL works in my terminal" promise — curl
+- _Negotiation only_: unpredictable across exotic clients; no way to force raw.
+- _`/raw` only_: breaks the "paste URL works in my terminal" promise — curl
   users would need to remember a different path than browser users.
-- *UA sniffing*: unmaintainable heuristics; fails for every new client.
+- _UA sniffing_: unmaintainable heuristics; fails for every new client.
 
 ## Consequences
 

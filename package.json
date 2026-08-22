@@ -17,8 +17,11 @@
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check"
   },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.3"
+  },
   "devDependencies": {
-    "@sveltejs/adapter-node": "^5.5.7",
+    "@sveltejs/adapter-vercel": "^6.3.4",
     "@sveltejs/kit": "^2.63.0",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "oxfmt": "^0.63.0",

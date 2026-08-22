@@ -24,11 +24,11 @@ Considerations:
 
 **Split by a single compile-time threshold:**
 
-| Size | Backend | Row shape |
-| --- | --- | --- |
-| ≤ 64 KiB (`PASTE_INLINE_THRESHOLD_BYTES`) | Postgres `pastes.content` TEXT column | `content` set, `storage_path` NULL |
-| 64 KiB – 5 MiB (`PASTE_MAX_BYTES`) | Supabase Storage bucket `pastes`, object key `{id}` | `storage_path` set, `content` NULL |
-| > 5 MiB | Rejected (`413`) before any write | — |
+| Size                                      | Backend                                             | Row shape                          |
+| ----------------------------------------- | --------------------------------------------------- | ---------------------------------- |
+| ≤ 64 KiB (`PASTE_INLINE_THRESHOLD_BYTES`) | Postgres `pastes.content` TEXT column               | `content` set, `storage_path` NULL |
+| 64 KiB – 5 MiB (`PASTE_MAX_BYTES`)        | Supabase Storage bucket `pastes`, object key `{id}` | `storage_path` set, `content` NULL |
+| > 5 MiB                                   | Rejected (`413`) before any write                   | —                                  |
 
 Invariants:
 

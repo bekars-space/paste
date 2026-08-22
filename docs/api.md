@@ -9,13 +9,13 @@ Every response body is UTF-8. Errors use a consistent JSON shape:
 
 ## Endpoints
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| `GET` | `/` | Create-paste UI (HTML) |
-| `POST` | `/api/pastes` | Programmatic create (curl / scripts) |
-| `GET` | `/{id}` | View paste — content-negotiated ([ADR 0004](adr/0004-content-negotiation-plus-raw-endpoint.md)) |
-| `GET` | `/raw/{id}` | Forced raw text, regardless of `Accept` |
-| `POST` | `/api/cron/purge` | Delete expired rows + objects (cron only) |
+| Method | Path              | Purpose                                                                                         |
+| ------ | ----------------- | ----------------------------------------------------------------------------------------------- |
+| `GET`  | `/`               | Create-paste UI (HTML)                                                                          |
+| `POST` | `/api/pastes`     | Programmatic create (curl / scripts)                                                            |
+| `GET`  | `/{id}`           | View paste — content-negotiated ([ADR 0004](adr/0004-content-negotiation-plus-raw-endpoint.md)) |
+| `GET`  | `/raw/{id}`       | Forced raw text, regardless of `Accept`                                                         |
+| `POST` | `/api/cron/purge` | Delete expired rows + objects (cron only)                                                       |
 
 The web UI's create form posts through a SvelteKit form action on `/`
 (progressive enhancement); it uses the same validation and rate-limit path as
@@ -31,7 +31,7 @@ Create a paste from a raw request body.
 
 - Body: raw text (`text/plain`). The body is treated as opaque bytes-in/UTF-8-out;
   no parsing of form fields.
-- Query parameter (optional): `ttl` — one of `1d`, `7d` *(default)*, `30d`, `90d`, `365d`.
+- Query parameter (optional): `ttl` — one of `1d`, `7d` _(default)_, `30d`, `90d`, `365d`.
 
 ```sh
 # paste from stdin
@@ -54,12 +54,12 @@ curl --data-binary @notes.txt 'https://paste.example.com/api/pastes?ttl=30d'
 
 **Errors**
 
-| Status | Code | When |
-| --- | --- | --- |
-| `400` | `invalid_ttl` | Unknown `ttl` value |
-| `400` | `empty_body` | Zero-byte body |
-| `413` | `too_large` | Body exceeds `PASTE_MAX_BYTES` (5 MiB) — rejected *before* rate budget is consumed |
-| `429` | `rate_limited` | IP byte budget exhausted; includes `Retry-After` header |
+| Status | Code           | When                                                                               |
+| ------ | -------------- | ---------------------------------------------------------------------------------- |
+| `400`  | `invalid_ttl`  | Unknown `ttl` value                                                                |
+| `400`  | `empty_body`   | Zero-byte body                                                                     |
+| `413`  | `too_large`    | Body exceeds `PASTE_MAX_BYTES` (5 MiB) — rejected _before_ rate budget is consumed |
+| `429`  | `rate_limited` | IP byte budget exhausted; includes `Retry-After` header                            |
 
 ---
 
@@ -67,9 +67,9 @@ curl --data-binary @notes.txt 'https://paste.example.com/api/pastes?ttl=30d'
 
 Content negotiation decides the representation:
 
-| Client `Accept` header | Response |
-| --- | --- |
-| Contains `text/html` (every browser sends this) | HTML viewer page |
+| Client `Accept` header                           | Response                                                  |
+| ------------------------------------------------ | --------------------------------------------------------- |
+| Contains `text/html` (every browser sends this)  | HTML viewer page                                          |
 | Anything else (`*/*`, `text/plain`, … e.g. curl) | Raw paste body, `Content-Type: text/plain; charset=utf-8` |
 
 ```sh
@@ -103,16 +103,16 @@ that renders HTML.
 
 ## Status codes (all routes)
 
-| Status | Meaning |
-| --- | --- |
-| `200` | Success |
-| `201` | Paste created |
-| `303` | Redirect after successful form-action create (web UI → `/{id}`) |
-| `400` | Malformed input |
-| `404` | Unknown ID **or** expired paste — indistinguishable by design |
-| `413` | Payload too large |
-| `429` | Rate limited (see [Rate limiting](rate-limiting.md)) |
-| `500` | Unexpected failure (no details leaked) |
+| Status | Meaning                                                         |
+| ------ | --------------------------------------------------------------- |
+| `200`  | Success                                                         |
+| `201`  | Paste created                                                   |
+| `303`  | Redirect after successful form-action create (web UI → `/{id}`) |
+| `400`  | Malformed input                                                 |
+| `404`  | Unknown ID **or** expired paste — indistinguishable by design   |
+| `413`  | Payload too large                                               |
+| `429`  | Rate limited (see [Rate limiting](rate-limiting.md))            |
+| `500`  | Unexpected failure (no details leaked)                          |
 
 ## Paste IDs
 

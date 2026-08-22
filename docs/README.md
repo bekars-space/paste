@@ -9,15 +9,15 @@ Bun and Supabase, deployed on Vercel.
 
 ## Reading order
 
-| Doc | Contents |
-| --- | --- |
-| [Architecture](architecture.md) | Stack, components, request flows, storage strategy |
-| [API](api.md) | Endpoints, content negotiation, status codes, curl examples |
-| [Database](database.md) | Supabase schema, RLS, rate-limit RPC, migrations, type generation |
-| [Rate limiting](rate-limiting.md) | Byte-budget policy, IP hashing, serverless constraints |
-| [Security](security.md) | Threat model, XSS, secrets handling, privacy |
-| [Deployment](deployment.md) | Vercel setup, adapter swap, cron cleanup, verification |
-| [Development](development.md) | Local setup, environment variables, commands, conventions |
+| Doc                               | Contents                                                          |
+| --------------------------------- | ----------------------------------------------------------------- |
+| [Architecture](architecture.md)   | Stack, components, request flows, storage strategy                |
+| [API](api.md)                     | Endpoints, content negotiation, status codes, curl examples       |
+| [Database](database.md)           | Supabase schema, RLS, rate-limit RPC, migrations, type generation |
+| [Rate limiting](rate-limiting.md) | Byte-budget policy, IP hashing, serverless constraints            |
+| [Security](security.md)           | Threat model, XSS, secrets handling, privacy                      |
+| [Deployment](deployment.md)       | Vercel setup, adapter swap, cron cleanup, verification            |
+| [Development](development.md)     | Local setup, environment variables, commands, conventions         |
 
 ## Architecture decision records
 

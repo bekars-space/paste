@@ -6,11 +6,11 @@ limiting is the primary abuse control. The strategy is deliberately simple:
 
 ## Policy
 
-| Parameter | Default | Env override |
-| --- | --- | --- |
-| Budget per IP per window | 20 MiB | `RATE_LIMIT_BUDGET_BYTES` |
-| Window length (fixed) | 1 hour | `RATE_LIMIT_WINDOW_SECONDS` |
-| Max single paste | 5 MiB | `PASTE_MAX_BYTES` |
+| Parameter                | Default | Env override                |
+| ------------------------ | ------- | --------------------------- |
+| Budget per IP per window | 20 MiB  | `RATE_LIMIT_BUDGET_BYTES`   |
+| Window length (fixed)    | 1 hour  | `RATE_LIMIT_WINDOW_SECONDS` |
+| Max single paste         | 5 MiB   | `PASTE_MAX_BYTES`           |
 
 **Invariant:** the budget must stay ≥ `PASTE_MAX_BYTES`, so any single paste
 always fits within a fresh window's budget.
@@ -73,18 +73,18 @@ is negligible against the insert/upload that follows.
 
 ### When to revisit
 
-| Trigger | Upgrade path |
-| --- | --- |
-| Sub-second precision needed / high write contention | Upstash Redis (sliding window) |
-| L7 floods before they reach functions | Vercel WAF / Firewall rules |
-| Global abuse patterns (multi-IP farms) | Vercel Attack Challenge Mode + budget tightening |
+| Trigger                                             | Upgrade path                                     |
+| --------------------------------------------------- | ------------------------------------------------ |
+| Sub-second precision needed / high write contention | Upstash Redis (sliding window)                   |
+| L7 floods before they reach functions               | Vercel WAF / Firewall rules                      |
+| Global abuse patterns (multi-IP farms)              | Vercel Attack Challenge Mode + budget tightening |
 
 None of these are warranted at current scale — documented here so the escape
 hatch is obvious.
 
 ## Enforcement order
 
-1. Parse body size → `413` if over cap *(budget untouched)*
+1. Parse body size → `413` if over cap _(budget untouched)_
 2. Compute IP hash → call `consume_rate_budget` → `429` + `Retry-After` if denied
 3. Generate ID, write payload, return `201`
 

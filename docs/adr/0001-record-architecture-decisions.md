@@ -7,7 +7,7 @@
 
 Engineering choices made today (storage backends, anonymity model, deployment
 target) are cheap to make and expensive to rediscover. Without a written
-record, the *why* behind each decision erodes as the codebase grows or as
+record, the _why_ behind each decision erodes as the codebase grows or as
 contributors rotate — leading to relitigated debates, inconsistent docs, and
 accidental reversals.
 

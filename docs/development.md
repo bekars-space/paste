@@ -2,11 +2,11 @@
 
 ## Prerequisites
 
-| Tool | Version | Notes |
-| --- | --- | --- |
-| [Bun](https://bun.sh) | >= 1.4 | Required — enforced by `engines` + `preinstall` guard (`npx only-allow bun`); npm/pnpm/yarn installs are rejected |
-| Supabase CLI | latest | Run via `bunx supabase …`; used for migrations, type generation, optional local DB |
-| A Supabase project | free tier is fine | Hosted dev/staging project, or local stack via `supabase start` (needs Docker) |
+| Tool                  | Version           | Notes                                                                                                             |
+| --------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------- |
+| [Bun](https://bun.sh) | >= 1.4            | Required — enforced by `engines` + `preinstall` guard (`npx only-allow bun`); npm/pnpm/yarn installs are rejected |
+| Supabase CLI          | latest            | Run via `bunx supabase …`; used for migrations, type generation, optional local DB                                |
+| A Supabase project    | free tier is fine | Hosted dev/staging project, or local stack via `supabase start` (needs Docker)                                    |
 
 Node.js is **not** required locally.
 
@@ -28,14 +28,14 @@ bun run dev
 
 Copy [.env.example](../.env.example) and fill:
 
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `SUPABASE_URL` | yes | Project URL (Dashboard → Settings → API) |
-| `SUPABASE_SERVICE_ROLE_KEY` | yes | service_role secret — server-only |
-| `RATE_LIMIT_SECRET` | yes | Any 32-byte hex string for dev (`openssl rand -hex 32`) |
-| `CRON_SECRET` | yes | Protects `/api/cron/purge`; any value locally |
-| `PASTE_*`, `RATE_LIMIT_*` | no | Defaults in [Architecture § Configuration constants](architecture.md#configuration-constants) |
-| `PUBLIC_SITE_URL` | no | Only affects returned absolute URLs |
+| Variable                    | Required | Purpose                                                                                       |
+| --------------------------- | -------- | --------------------------------------------------------------------------------------------- |
+| `SUPABASE_URL`              | yes      | Project URL (Dashboard → Settings → API)                                                      |
+| `SUPABASE_SERVICE_ROLE_KEY` | yes      | service_role secret — server-only                                                             |
+| `RATE_LIMIT_SECRET`         | yes      | Any 32-byte hex string for dev (`openssl rand -hex 32`)                                       |
+| `CRON_SECRET`               | yes      | Protects `/api/cron/purge`; any value locally                                                 |
+| `PASTE_*`, `RATE_LIMIT_*`   | no       | Defaults in [Architecture § Configuration constants](architecture.md#configuration-constants) |
+| `PUBLIC_SITE_URL`           | no       | Only affects returned absolute URLs                                                           |
 
 Never commit `.env`; never prefix these with `PUBLIC_`
 ([Security § Secrets](security.md#secrets-handling)).
