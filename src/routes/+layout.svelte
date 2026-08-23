@@ -4,7 +4,7 @@
   import "@fontsource-variable/jetbrains-mono";
   import favicon from "$lib/assets/favicon.svg";
 
-  let { children } = $props();
+  let { data, children } = $props();
 
   type Theme = "light" | "dark";
 
@@ -48,6 +48,6 @@
 
   <footer>
     <span class="micro">create from your terminal</span>
-    <code>echo hi | curl --data-binary @- https://your-host/api/pastes</code>
+    <code>{data.createCommand}</code>
   </footer>
 </div>
