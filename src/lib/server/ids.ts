@@ -1,6 +1,4 @@
-/**
- * 8-character base62 IDs generated from a CSPRNG (docs/api.md § Paste IDs).
- */
+/** 8-character base62 IDs generated from a CSPRNG. */
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 /** Rejection threshold to avoid modulo bias: 62 * 4 = 248 divides 256 evenly. */

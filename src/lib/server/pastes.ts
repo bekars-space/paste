@@ -28,8 +28,8 @@ const MAX_COLLISION_RETRIES = 5;
 
 /**
  * Single validation + persistence path shared by POST /api/pastes and the web
- * form action. Order matters per docs/api.md: cheap input checks → 413 before
- * any budget is consumed → rate limit → insert.
+ * form action. Order: cheap input checks → 413 before any budget is consumed
+ * → rate limit → insert.
  */
 export async function createPaste(
   content: string,
@@ -88,8 +88,8 @@ export async function createPaste(
     const rowId = newPasteId();
     let storagePath: string | null = null;
 
-    // Hybrid storage split (ADR 0005): ≤ threshold inline, else Storage
-    // object keyed by the row id (docs/database.md § pastes).
+    // Hybrid storage split: ≤ threshold inline, else Storage object keyed
+    // by the row id.
     if (!inline) {
       const { error } = await supabase.storage.from(PASTES_BUCKET).upload(rowId, content, {
         contentType: "text/plain; charset=utf-8",

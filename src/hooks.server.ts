@@ -6,10 +6,10 @@ import { fetchRaw } from "$lib/server/raw";
 const ID_PATH = /^\/([A-Za-z0-9]{8})$/;
 
 /**
- * Content negotiation for GET /{id} (ADR 0004): browsers — whose Accept
- * explicitly includes text/html — fall through to the viewer page; every
- * other client (curl, wget, plain HTTP) gets the raw body right here, no
- * redirect involved. GET /raw/{id} never matches and stays forced-raw.
+ * Content negotiation for GET /{id}: browsers — whose Accept explicitly
+ * includes text/html — fall through to the viewer page; every other client
+ * (curl, wget, plain HTTP) gets the raw body right here, no redirect
+ * involved. GET /raw/{id} never matches and stays forced-raw.
  *
  * Kit strips the /__data.json and /__route.js suffixes from event.url before
  * hooks run, so its internal navigation requests look like plain /{id} here.

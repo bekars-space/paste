@@ -6,7 +6,7 @@ import { clientIp } from "$lib/server/rate-limit";
 
 /**
  * Web UI create path — same validation + rate-limit core as the API
- * endpoint (docs/api.md). Progressive enhancement: works without JS.
+ * endpoint. Progressive enhancement: works without JS.
  */
 export const actions: Actions = {
   default: async ({ request }) => {

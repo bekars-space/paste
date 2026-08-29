@@ -4,7 +4,7 @@ import { siteUrl } from "$lib/server/env";
 import { createPaste } from "$lib/server/pastes";
 import { clientIp } from "$lib/server/rate-limit";
 
-/** Programmatic create — docs/api.md § POST /api/pastes. */
+/** Programmatic create — POST /api/pastes. */
 export const POST: RequestHandler = async ({ request, url }) => {
   const body = await request.text();
 

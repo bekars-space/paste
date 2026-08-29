@@ -1,5 +1,4 @@
 -- Initial schema for the anonymous pastebin.
--- Spec: docs/database.md (schema, RPC, security model).
 
 create table public.pastes (
   id           text primary key,

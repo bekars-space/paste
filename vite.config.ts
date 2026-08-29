@@ -11,15 +11,14 @@ export default defineConfig({
           filename.split(/[/\\]/).includes("node_modules") ? undefined : true,
       },
 
-      // adapter-vercel targets Vercel's Node.js runtime (docs/deployment.md).
+      // Vercel serverless — pin runtime explicitly; building under Bun makes
+      // version auto-detection unreliable.
       // See https://svelte.dev/docs/kit/adapters for more information about adapters.
-      // Pin the serverless runtime explicitly — building under Bun makes
-      // version auto-detection unreliable (docs/deployment.md).
       adapter: adapter({ runtime: "nodejs22.x" }),
 
       // CSP is managed here (not in hooks) so SvelteKit can hash its own
       // inline hydration bootstrap into script-src automatically. Hash mode,
-      // not nonce: deterministic per build and safe to cache (docs/security.md).
+      // not nonce: deterministic per build and safe to cache.
       csp: {
         mode: "hash",
         directives: {

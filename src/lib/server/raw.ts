@@ -9,7 +9,7 @@ async function sha256Hex(body: string): Promise<string> {
     .join("");
 }
 
-/** Unknown ID and expired paste are indistinguishable (docs/api.md). */
+/** Unknown ID and expired paste are indistinguishable — both return 404. */
 export function notFoundResponse(): Response {
   return new Response(
     JSON.stringify({
@@ -19,10 +19,7 @@ export function notFoundResponse(): Response {
   );
 }
 
-/**
- * Raw representation per docs/api.md § GET /raw/{id}. Served both by the
- * content-negotiation hook and the /raw/{id} route.
- */
+/** Raw representation — served both by the content-negotiation hook and the /raw/{id} route. */
 export async function rawPasteResponse(
   paste: FetchedPaste,
   requestHeaders: Headers,
