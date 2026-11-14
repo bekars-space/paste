@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import CheckConstraint, func
+from sqlalchemy import CheckConstraint, func, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.sql.sqltypes import BigInteger, DateTime, String, Text
@@ -15,7 +15,10 @@ class Paste(Base):
     __tablename__ = "pastes"
 
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID(), primary_key=True, default=uuid.uuid4, server_default="gen_random_uuid()"
+        UUID(),
+        primary_key=True,
+        default=uuid.uuid4,
+        server_default=text("gen_random_uuid()"),
     )
 
     type: Mapped[str] = mapped_column(String(10), nullable=False)
