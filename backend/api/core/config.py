@@ -27,5 +27,10 @@ class Settings(BaseSettings):
             path=self.POSTGRES_DB,
         )
 
+    MAX_EXPIRATION_DAYS: int = 30
+    MIN_EXPIRATION_DAYS: int = 1
+    MAX_SIZE_BYTES: int = 128 * 1024 * 1024
+    EXPIRATION_COEFFICIENT: int = 4
+
 
 settings = Settings()  # type: ignore
