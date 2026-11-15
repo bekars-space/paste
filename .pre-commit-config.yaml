@@ -1,0 +1,34 @@
+default_install_hook_types:
+  - pre-commit
+  - pre-push
+
+repos:
+  # General file hygiene
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        # Alembic migration files are auto-generated — don't touch them
+        exclude: ^backend/migrations/
+      - id: end-of-file-fixer
+        exclude: ^backend/migrations/
+      - id: check-yaml
+      - id: check-toml
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: check-case-conflict
+
+  # Keep uv.lock in sync with pyproject.toml
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.13.8
+    hooks:
+      - id: uv-lock
+
+  # Ruff (lint + format) — version pinned to the project's ruff
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.5
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
