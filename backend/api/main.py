@@ -1,13 +1,18 @@
 from fastapi import FastAPI
+from fastapi.routing import APIRouter
+
+from api.core.config import settings
 
 from .routes import health, pastes
 
-api = FastAPI()
+app = FastAPI()
 
-api.include_router(health.router, prefix="/api/v1")
-api.include_router(pastes.router, prefix="/api/v1")
+api_router = APIRouter(prefix=settings.API_V1_STR)
+api_router.include_router(pastes.router)
+app.include_router(api_router)
+app.include_router(health.router)
 
 
-@api.get("/")
+@app.get("/")
 async def root():
     return {"message": "hello"}
