@@ -1,3 +1,6 @@
+from uuid import UUID
+
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from api.models import Paste
@@ -24,3 +27,9 @@ def create_text_paste(db: Session, payload: PasteTextCreate) -> Paste:
     db.refresh(paste)
 
     return paste
+
+
+def get_paste_metadata(db: Session, paste_id: UUID) -> Paste | None:
+    statement = select(Paste).where(Paste.id == paste_id, Paste.expires_at > func.now())
+
+    return db.scalar(statement)

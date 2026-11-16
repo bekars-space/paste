@@ -1,17 +1,22 @@
 from typing import Annotated
+from uuid import UUID
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from api.core.db import get_db
-from api.schemas.paste import PasteCreateResponse, PasteTextCreate
-from api.services.paste import create_text_paste
+from api.schemas.paste import (
+    PasteCreateResponse,
+    PasteMetadataResponse,
+    PasteTextCreate,
+)
+from api.services.paste import create_text_paste, get_paste_metadata
 
 router = APIRouter(prefix="/pastes")
 
 
 @router.post(
-    "",
+    "/",
     response_model=PasteCreateResponse,
     status_code=status.HTTP_201_CREATED,
 )
@@ -25,3 +30,18 @@ def create_paste(
         id=paste.id,
         expires_at=paste.expires_at,
     )
+
+
+@router.get("/{paste_id}", response_model=PasteMetadataResponse)
+def read_paste(
+    paste_id: UUID, db: Annotated[Session, Depends(get_db)]
+) -> PasteMetadataResponse:
+
+    paste = get_paste_metadata(db, paste_id)
+
+    if paste is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="paste not found"
+        )
+
+    return PasteMetadataResponse.model_validate(paste)
