@@ -33,3 +33,14 @@ def get_paste_metadata(db: Session, paste_id: UUID) -> Paste | None:
     statement = select(Paste).where(Paste.id == paste_id, Paste.expires_at > func.now())
 
     return db.scalar(statement)
+
+
+def get_paste_raw(db: Session, paste_id: UUID) -> str | None:
+    statement = select(Paste).where(Paste.id == paste_id, Paste.expires_at > func.now())
+
+    paste = db.scalar(statement)
+
+    if paste is None or paste.type != "text":
+        return None
+
+    return paste.content

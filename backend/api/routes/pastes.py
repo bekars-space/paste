@@ -1,7 +1,7 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
 from api.core.db import get_db
@@ -10,7 +10,7 @@ from api.schemas.paste import (
     PasteMetadataResponse,
     PasteTextCreate,
 )
-from api.services.paste import create_text_paste, get_paste_metadata
+from api.services.paste import create_text_paste, get_paste_metadata, get_paste_raw
 
 router = APIRouter(prefix="/pastes")
 
@@ -45,3 +45,18 @@ def read_paste(
         )
 
     return PasteMetadataResponse.model_validate(paste)
+
+
+@router.get("/{paste_id}/raw")
+def read_paste_raw(paste_id: UUID, db: Annotated[Session, Depends(get_db)]) -> Response:
+    content = get_paste_raw(db, paste_id)
+
+    if content is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="paste not found"
+        )
+
+    return Response(
+        content,
+        media_type="text/plain",
+    )
