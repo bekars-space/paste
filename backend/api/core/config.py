@@ -1,4 +1,4 @@
-from pydantic import PostgresDsn
+from pydantic import PostgresDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -30,7 +30,15 @@ class Settings(BaseSettings):
     MAX_EXPIRATION_DAYS: int = 30
     MIN_EXPIRATION_DAYS: int = 1
     MAX_SIZE_BYTES: int = 128 * 1024 * 1024
+    MAX_TEXT_SIZE_BYTES: int = 1024 * 1024
     EXPIRATION_COEFFICIENT: int = 4
+    PRESIGNED_URL_EXPIRY_SECONDS: int = 15 * 60
+
+    S3_ENDPOINT_URL: str
+    S3_REGION: str = "us-east-2"
+    S3_ACCESS_KEY_ID: str
+    S3_SECRET_ACCESS_KEY: SecretStr
+    S3_BUCKET: str
 
 
 settings = Settings()  # type: ignore
